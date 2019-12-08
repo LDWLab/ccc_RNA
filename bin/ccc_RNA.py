@@ -6,6 +6,17 @@ import csv
 from Bio import AlignIO
 
 #%%
+def load_chain_data(csv_location):
+    '''Load chain -> polymer name dictionaries from Nick.
+    '''
+    out_dict = dict()
+    with open(csv_location) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            out_dict[row[1]] = row[0]
+    return out_dict
+
+#%%
 def load_cons_data(csv_location,cons_data_dict):
     '''Loads twincons data into provided dict
     '''
@@ -41,22 +52,39 @@ def get_annotation_sequence_index(seq_name,alignment):
             break
     return annot_seq_ix
 
+#%%
+def load_contacts(contacts_location, rrna_chain, dist_thr):
+    with open(contacts_location) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter='\t')
+        first_line = True
+        for row in csv_reader:
+            if first_line:
+                first_line = False
+                continue
+            if float(row[3]) > dist_thr:
+                continue
+            if ((str(row[0].split(':')[0]) == rrna_chain) and (len(row[2].split(':')[3]) == 3) and (len(row[0].split(':')[3]) == 1)) or \
+                ((str(row[2].split(':')[0]) == rrna_chain) and (len(row[0].split(':')[3]) == 3) and (len(row[2].split(':')[3]) == 1)):
+                print (row)
 
 #%%
 alignment = AlignIO.read(open('data/cons/LSU_AB.fas'), "fasta")
+thet2_chaindict = load_chain_data('data/pdb/4qcn_chain_dict.csv')
+pyrfu_chaindict = load_chain_data('data/pdb/3j2l-3j21_chain_dict.csv')
 
-
-gap_to_nogap_ecoli = gap_to_nogap_construct(alignment[get_annotation_sequence_index('LSUb_511145_ECOLI/1-2904',alignment)])
+gap_to_nogap_thet2 = gap_to_nogap_construct(alignment[get_annotation_sequence_index('LSUb_262724_THET2/1-2912',alignment)])
 gap_to_nogap_pyrfu = gap_to_nogap_construct(alignment[get_annotation_sequence_index('LSUa_186497_PYRFU/1-3048',alignment)])
 #print(gap_to_nogap_pyrfu)
 cons_data_dict = dict()
 cons_data_dict = load_cons_data('data/cons/twc_AB_LSU.csv', cons_data_dict)
 
-for aln_ix in cons_data_dict.keys():
-    try:
-        print('Alignment position:', aln_ix)
-        print ('ECOLI:', gap_to_nogap_ecoli[int(aln_ix)], cons_data_dict[aln_ix])
-        print ('PYRFU:', gap_to_nogap_pyrfu[int(aln_ix)], cons_data_dict[aln_ix])
-    except:
-        pass
+#for aln_ix in cons_data_dict.keys():
+#    try:
+#        print('Alignment position:', aln_ix)
+#        print ('THET2:', gap_to_nogap_thet2[int(aln_ix)], cons_data_dict[aln_ix])
+#        print ('PYRFU:', gap_to_nogap_pyrfu[int(aln_ix)], cons_data_dict[aln_ix])
+#    except:
+#        pass
 
+#load_contacts('data/contacts/4qcn_edges.txt', 'A', 3)
+load_contacts('data/contacts/3j2l-3j21_merge_edges.txt', '1', 3)
