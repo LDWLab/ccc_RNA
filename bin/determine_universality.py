@@ -31,10 +31,10 @@ def main(spec_name, polymer_name, resi_id):
         if not any(resi_id in range(r[0], r[1]) for r in json_dicts[definition][polymer_name]):
             continue
         if definition[0] in {'u','G'}:
-            return 'uni'
+            return definition
         else:
-            return 'spec'
+            return definition
         return None
 
 
-#determine_universality('PYRFU','uL16',150)
+#print(main('PYRFU','uL16',150))
