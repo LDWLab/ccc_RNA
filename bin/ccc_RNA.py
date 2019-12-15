@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set_style('whitegrid')
 
-import bin.determine_universality
+import bin.determine_universality as determine_universality
 
 #%%
 #Initialize functions for loading and parsing data.
@@ -68,7 +68,7 @@ def base_pairs(csv_location):
         line_count = 0
         for row in csv_reader:
             if line_count > 1:
-                base_pairs.append((int(row[1])+1,int(row[2])+1))
+                base_pairs.append((int(row[1]),int(row[2])))
             line_count+=1
     return base_pairs
 
@@ -170,9 +170,9 @@ def filter_on_specificity(base_pairs, bp_to_contact, species, chaindict):
         if base_pair not in bp_to_contact.keys():
             continue
         for contact in bp_to_contact[base_pair]:
-            if bin.determine_universality.main(species, chaindict[str(contact[0])], int(contact[1])) == 'uni':
+            if determine_universality.main(species, chaindict[str(contact[0])], int(contact[1])) == 'uni':
                 continue
-            if bin.determine_universality.main(species, chaindict[str(contact[0])], int(contact[1])) == 'spec':
+            if determine_universality.main(species, chaindict[str(contact[0])], int(contact[1])) == 'spec':
                 bps_with_spec_contact.append(base_pair)
                 break
     return bps_with_spec_contact
@@ -205,15 +205,14 @@ pfbp_to_twc = construct_bp_to_twc(pfnucl_to_twc, pf_base_pairs)
 ttbp_to_contacts = construct_bp_to_contact(tt_base_pairs, thet8_contacts)
 pfbp_to_contacts = construct_bp_to_contact(pf_base_pairs, pyrfu_contacts)
 
-#%%
-
-ttlow_bps, ttrand_bps, tthigh_bps = filter_on_twc(tt_base_pairs, ttbp_to_twc, -1.5, 8.5)
-pflow_bps, pfrand_bps, pfhigh_bps = filter_on_twc(pf_base_pairs, pfbp_to_twc, -1.5, 8.5)
-
 ttspec_bps = filter_on_specificity(tt_base_pairs, ttbp_to_contacts, 'THET8', thet8_chaindict)
 pfspec_bps = filter_on_specificity(pf_base_pairs, pfbp_to_contacts, 'PYRFU', pyrfu_chaindict)
+#%%
 
-pflowspec_bps, pfrandspec_bps, pfhighspec_bps = filter_on_twc(pfspec_bps, pfbp_to_twc, -1.5, 8.5)
+ttlow_bps, ttrand_bps, tthigh_bps = filter_on_twc(tt_base_pairs, ttbp_to_twc, -1, 5)
+pflow_bps, pfrand_bps, pfhigh_bps = filter_on_twc(pf_base_pairs, pfbp_to_twc, -1, 5)
+
+pflowspec_bps, pfrandspec_bps, pfhighspec_bps = filter_on_twc(pfspec_bps, pfbp_to_twc, -1, 5)
 #%%
 print("P(A):", len(pfspec_bps)/len(pf_base_pairs))
 print("P(B):", len(pflow_bps)/len(pf_base_pairs))
@@ -227,7 +226,8 @@ print(len(pflowspec_bps)/len(pflow_bps), len(pfrandspec_bps)/len(pfrand_bps), le
 
 #%%
 for bps in pflow_bps:
-    print(bps, pfbp_to_twc[bps])
+    print(bps, pfbp_to_twc[bps], bool(bps in pflowspec_bps))
+
 
 # #%%
 # #Initiate lists for dataframe and fill them with data
@@ -250,7 +250,7 @@ for bps in pflow_bps:
 #     for contact in thet8_contacts[gap_to_nogap_thet8[int(aln_ix)]]:
 #         tt_polymer = thet8_chaindict[str(contact[0])]
 #         nucl_ix = gap_to_nogap_thet8[int(aln_ix)]
-#         contact_universality = bin.determine_universality.main('THET8', tt_polymer, int(contact[1]))
+#         contact_universality = determine_universality.main('THET8', tt_polymer, int(contact[1]))
 #         #print(nucl_ix, contact_universality, alnpos_to_twc[aln_ix], contact[2])
 #         nucl_pos.append(nucl_ix)
 #         universality.append(contact_universality)
@@ -281,7 +281,7 @@ for bps in pflow_bps:
 #     for contact in pyrfu_contacts[gap_to_nogap_pyrfu[int(aln_ix)]]:
 #         pf_polymer = pyrfu_chaindict[str(contact[0])]
 #         nucl_ix = gap_to_nogap_pyrfu[int(aln_ix)]
-#         contact_universality = bin.determine_universality.main('PYRFU', pf_polymer, int(contact[1]))
+#         contact_universality = determine_universality.main('PYRFU', pf_polymer, int(contact[1]))
 #         #print(nucl_ix, contact_universality, alnpos_to_twc[aln_ix], contact[2])
 #         nucl_pos.append(nucl_ix)
 #         universality.append(contact_universality)
@@ -317,12 +317,12 @@ for bps in pflow_bps:
 #         pfcontact_dict_neg[base_pair] = []
 #     for contact in pyrfu_contacts[base_pair[1]]:
 #         tt_polymer = pyrfu_chaindict[str(contact[0])]
-#         contact_universality = bin.determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
+#         contact_universality = determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
 #         pfcontact_dict_neg[base_pair].append((contact_universality,pfnucl_to_lowtwc[base_pair[1]], contact[2]))
 #         #print (base_pair[1], tt_polymer,contact_universality, pfnucl_to_lowtwc[base_pair[1]], contact[2])
 #     for contact in pyrfu_contacts[base_pair[0]]:
 #         tt_polymer = pyrfu_chaindict[str(contact[0])]
-#         contact_universality = bin.determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
+#         contact_universality = determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
 #         pfcontact_dict_neg[base_pair].append((contact_universality,pfnucl_to_lowtwc[base_pair[0]], contact[2]))
 #         #print (base_pair[0], tt_polymer,contact_universality, pfnucl_to_lowtwc[base_pair[0]], contact[2])
 
@@ -337,11 +337,11 @@ for bps in pflow_bps:
 #         pfcontact_dict_rand[base_pair] = []
 #     for contact in pyrfu_contacts[base_pair[1]]:
 #         tt_polymer = pyrfu_chaindict[str(contact[0])]
-#         contact_universality = bin.determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
+#         contact_universality = determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
 #         pfcontact_dict_rand[base_pair].append((contact_universality,pfnucl_to_random[base_pair[1]], contact[2]))
 #     for contact in pyrfu_contacts[base_pair[0]]:
 #         tt_polymer = pyrfu_chaindict[str(contact[0])]
-#         contact_universality = bin.determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
+#         contact_universality = determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
 #         pfcontact_dict_rand[base_pair].append((contact_universality,pfnucl_to_random[base_pair[0]], contact[2]))
 
 # #%%
@@ -355,11 +355,11 @@ for bps in pflow_bps:
 #         pfcontact_dict_pos[base_pair] = []
 #     for contact in pyrfu_contacts[base_pair[1]]:
 #         tt_polymer = pyrfu_chaindict[str(contact[0])]
-#         contact_universality = bin.determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
+#         contact_universality = determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
 #         pfcontact_dict_pos[base_pair].append((contact_universality,pfnucl_to_hightwc[base_pair[1]], contact[2]))
 #     for contact in pyrfu_contacts[base_pair[0]]:
 #         tt_polymer = pyrfu_chaindict[str(contact[0])]
-#         contact_universality = bin.determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
+#         contact_universality = determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
 #         pfcontact_dict_pos[base_pair].append((contact_universality,pfnucl_to_hightwc[base_pair[0]], contact[2]))
 
 # #%%

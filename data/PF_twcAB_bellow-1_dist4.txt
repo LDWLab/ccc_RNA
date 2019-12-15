@@ -1,0 +1,98 @@
+(17, 560) (-3.0, -3.0) 						  False		IN Bacteria bL20, bL32, uL22, eL32
+(21, 556) (-2.49253731343, -1.44776119403)    True	
+(31, 513) (-2.35323383085, -2.35323383085)    True	
+(38, 480) (-2.28358208955, -2.28358208955)    True	
+(40, 478) (-1.96517412935, -1.96517412935)    True	
+(224, 251) (-1.99502487562, -1.96019900498)   True	
+(456, 2524) (-2.66666666667, -2.70149253731)  False		IN uL15 incorrect uIDR 26-72 should be aIDR
+(566, 2164) (-2.33333333333, -3.0) 			  True	
+(571, 650) (-1.58706467662, -1.87064676617)   True	
+(575, 646) (-2.32835820896, -2.90049751244)   True	
+(656, 667) (-3.0, -2.82089552239) 			  True	
+(675, 1398) (-2.8407960199, -2.8407960199)    False		IN bL20...
+(681, 800) (-2.71641791045, -2.71641791045)   False		IN uL15 26-72 should be aIDR; bL35 influence; uL4 shift?
+(826, 904) (-2.07462686567, -2.07462686567)   True	
+(846, 851) (-1.37313432836, -2.70149253731)   False		?? Points towards the SSU, makes a bridge; uS15 maybe C-term?also AES10a shifted?
+(847, 850) (-2.3, -1.06965174129) 			  False		?? Points towards the SSU, makes a bridge; uS15 maybe C-term?also AES10a shifted?
+(850, 847) (-1.06965174129, -2.3) 			  False		?? Points towards the SSU, makes a bridge; uS15 maybe C-term?also AES10a shifted?
+(870, 895) (-2.33333333333, -2.34328358209)   False		?? Near tunnel; bL34/eL37 nearby but not close enough
+(948, 1337) (-3.0, -3.0) 					  True	
+(978, 1073) (-1.93532338308, -1.95024875622)  True	
+(983, 1065) (-1.2039800995, -1.65174129353)   True	
+(991, 1058) (-2.70149253731, -1.22388059701)  True	
+(1017, 1035) (-1.89054726368, -1.05472636816) False		?? End of CP, towards SSU, maybe A-site tRNA also
+(1035, 1017) (-1.05472636816, -1.89054726368) False		?? End of CP, towards SSU, maybe A-site tRNA also
+(1087, 1102) (-1.35323383085, -1.45771144279) False		Too weak signal, probably regular covariation
+(1089, 1100) (-1.34825870647, -1.02985074627) False		Too weak signal, probably regular covariation
+(1129, 1299) (-2.01492537313, -2.17412935323) True	
+(1130, 1298) (-1.38805970149, -1.74626865672) True	
+(1132, 1296) (-2.46268656716, -2.46268656716) True	
+(1175, 1258) (-2.47263681592, -1.93532338308) True	
+(1176, 1257) (-2.54228855721, -2.54228855721) True		uL06 N-term incorrectly assigned to Glob, 1-8 should be aIDR; 1-13 should be bDecor
+(1177, 1256) (-1.74129353234, -1.81094527363) True	
+(1181, 1252) (-1.57711442786, -1.47263681592) False		Too weak signal, Falloff from the real CC 1176-1257
+(1193, 1244) (-2.28358208955, -1.69651741294) False		uL10 only resolved in PF... probably the extra C-term domain in PF, or the extra loop around 70 => annotation also not correct...
+(1405, 2140) (-2.0, -1.0) 					  True	
+(1406, 2139) (-2.06467661692, -1.33333333333) True	
+(1415, 1764) (-1.19502487562, -3.0) 		  False		Not actually a bp, region is quite unpaired with many -twc, probably result of bL17/eL31 eL19; in the back region of Arch restructuring
+(1447, 1780) (-2.20895522388, -2.15422885572) True	
+(1460, 1478) (-2.01492537313, -1.97512437811) True	
+(1466, 1474) (-1.5223880597, -1.93980099502)  True	
+(1506, 1509) (-2.82089552239, -1.67611940299) True	
+(1509, 1506) (-1.67611940299, -2.82089552239) True	
+(1584, 1728) (-1.98009950249, -1.86069651741) True	
+(1585, 1727) (-2.66666666667, -2.46268656716) True	
+(1591, 1715) (-1.51243781095, -1.49751243781) True	
+(1599, 1600) (-1.28855721393, -2.24825870647) True	
+(1600, 1599) (-2.24825870647, -1.28855721393) True	
+(1638, 1664) (-1.69402985075, -1.29154228856) True	
+(1646, 1656) (-1.66965174129, -1.82288557214) True	
+(1647, 1655) (-2.42686567164, -2.37611940299) True	
+(1648, 1654) (-2.36268656716, -2.1960199005)  True	
+(1786, 1794) (-1.46766169154, -1.46766169154) True	
+(1808, 2131) (-1.38805970149, -1.38805970149) True	
+(1824, 2119) (-3.0, -3.0) 					  False		Missing uL14 aIDR/aOR 44-54
+(1909, 2106) (-2.51243781095, -2.71144278607) False		Close to SSU, possibly aIF2G, something with initiation
+(1986, 1988) (-2.83084577114, -1.91044776119) False		AES15 shift. Near SSU, EC16S:702/PF16S:656, E-tRNA
+(1986, 2017) (-2.83084577114, -1.91044776119) False		AES15 shift. Near SSU, EC16S:702/PF16S:656, E-tRNA
+(1988, 2017) (-1.91044776119, -1.91044776119) False		AES15 shift. Near SSU, EC16S:702/PF16S:656, E-tRNA
+(1988, 1986) (-1.91044776119, -2.83084577114) False		AES15 shift. Near SSU, EC16S:702/PF16S:656, E-tRNA
+(1995, 2010) (-1.26368159204, -2.8407960199)  False		AES15 shift. Near CCA of E-tRNA, bL33/aL42
+(1996, 2009) (-3.0, -2.67164179104) 		  False		AES15 shift. Near CCA of E-tRNA, bL33/aL42
+(2003, 2528) (-1.20895522388, -2.67164179104) False		Not a real bp, result of 2005-2529 (aL42 tail)
+(2005, 2529) (-2.10447761194, -3.0) 		  True		aL42 tail
+(2032, 2046) (-3.0, -3.0) 					  False		AES29. P-tRNA mRNA?
+(2033, 2045) (-2.10447761194, -2.10447761194) False		AES29. P-tRNA mRNA?
+(2139, 1406) (-1.33333333333, -2.06467661692) True
+(2143, 2157) (-2.61194029851, -2.32338308458) False		IN Bacteria bL20 and bL32
+(2149, 2160) (-1.08457711443, -1.04975124378) False		Too weak signal, nearish aL33 loop
+(2164, 566) (-3.0, -2.33333333333) 			  True
+(2169, 2737) (-3.0, -3.0) 					  True
+(2180, 2726) (-2.50746268657, -2.50746268657) False		AES3-4. IN Bacteria bL32 tail
+(2211, 2344) (-1.39800995025, -1.407960199)   True
+(2213, 2342) (-2.33333333333, -2.33333333333) True
+(2221, 2314) (-1.34825870647, -1.50746268657) False		Too weak signal, AES39, near bL9/eL15 but not quite E-tRNA but not quite too
+(2239, 2289) (-1.13432835821, -1.00995024876) False		Too weak signal, Same as ^, in E-stalk, possibly uL01, not resolved in B, no MSA either predict diff in MSA around 95-100 PF uL01р здяясфвщ к
+(2240, 2289) (-1.0, -1.00995024876) 		  False		Too weak signal, Same as ^, in E-stalk, possibly uL01, not resolved in B, no MSA either predict diff in MSA around 95-100 PF uL01р здяясфвщ к
+(2289, 2240) (-1.00995024876, -1.0) 		  False		Too weak signal, Same as ^, in E-stalk, possibly uL01, not resolved in B, no MSA either predict diff in MSA around 95-100 PF uL01р здяясфвщ к
+(2289, 2239) (-1.00995024876, -1.13432835821) False		Too weak signal, Same as ^, in E-stalk, possibly uL01, not resolved in B, no MSA either predict diff in MSA around 95-100 PF uL01р здяясфвщ к
+(2376, 2392) (-1.66666666667, -2.0) 		  True
+(2416, 2428) (-2.46766169154, -2.59502487562) False		AES36 CP. ?? Check uL05 twc
+(2443, 2503) (-1.25373134328, -1.25373134328) True
+(2467, 2481) (-3.0, -3.0) 					  True
+(2468, 2480) (-1.77114427861, -1.77114427861) True
+(2510, 2540) (-2.64179104478, -3.0) 		  True
+(2514, 2537) (-2.55223880597, -2.89552238806) True
+(2540, 2510) (-3.0, -2.64179104478) 		  True
+(2571, 2610) (-2.00995024876, -2.00995024876) True
+(2577, 2603) (-1.65671641791, -1.55721393035) False		AES1. Quite low signal. Near aeIDR of uL16
+(2580, 2600) (-1.14925373134, -1.30348258706) True
+(2581, 2599) (-3.0, -3.0) 					  True
+(2628, 2686) (-3.0, -3.0) 					  True
+(2631, 2683) (-2.7960199005, -2.7960199005)   True
+(2705, 2719) (-1.55223880597, -1.55223880597) False		AES4. Quite low signal, close to the CCA of P-tRNA
+(2737, 2962) (-3.0, -1.5671641791) 			  True
+(2762, 2790) (-1.82587064677, -1.76616915423) True
+(2792, 2845) (-2.50248756219, -2.592039801)   True
+(2795, 2842) (-1.38805970149, -1.38805970149) True
+(2962, 2737) (-1.5671641791, -3.0) 			  True
