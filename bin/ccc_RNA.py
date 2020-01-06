@@ -67,9 +67,10 @@ def base_pairs(csv_location):
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
         for row in csv_reader:
-            if line_count > 1:
-                base_pairs.append((int(row[1]),int(row[2])))
-            line_count+=1
+            if line_count < 2:
+                line_count+=1
+                continue
+            base_pairs.append((int(row[1]),int(row[2])))
     return base_pairs
 
 def load_contacts(contacts_location, rrna_chain, dist_thr):
@@ -177,6 +178,13 @@ def filter_on_specificity(base_pairs, bp_to_contact, species, chaindict):
                 break
     return bps_with_spec_contact
 
+def unique_tup_list(tup_list):
+    list_of_sorted_value_tups = []
+    for tup in tup_list:
+        list_of_sorted_value_tups.append((sorted(tup)[0],sorted(tup)[1]))
+    return set(list_of_sorted_value_tups)
+
+
 #%%
 #Load and parse data
 
@@ -190,7 +198,8 @@ gap_to_nogap_pyrfu = gap_to_nogap_construct(alignment[get_annotation_sequence_in
 alnpos_to_twc = load_cons_data('data/cons/twc_AB_LSU.csv')
 
 tt_base_pairs = base_pairs('data/contacts/TT_LSU_3D_BasePairs.csv') #Completely wrong...
-pf_base_pairs = base_pairs('data/contacts/PyFu_LSU_BasePairs.csv')  #Manually fixed by adding 1 to all
+pf_base_pairs = base_pairs('data/contacts/PyFu_LSU_BasePairs.csv')  #Manually fixed by adding 1 to all in the datafile
+print(len(pf_base_pairs))
 
 thet8_contacts = load_contacts('data/contacts/4qcn_edges.txt', 'A', 4)
 pyrfu_contacts = load_contacts('data/contacts/3j2l-3j21_merge_edges.txt', '1', 4)
@@ -209,10 +218,10 @@ ttspec_bps = filter_on_specificity(tt_base_pairs, ttbp_to_contacts, 'THET8', the
 pfspec_bps = filter_on_specificity(pf_base_pairs, pfbp_to_contacts, 'PYRFU', pyrfu_chaindict)
 #%%
 
-ttlow_bps, ttrand_bps, tthigh_bps = filter_on_twc(tt_base_pairs, ttbp_to_twc, -1, 5)
-pflow_bps, pfrand_bps, pfhigh_bps = filter_on_twc(pf_base_pairs, pfbp_to_twc, -1, 5)
+ttlow_bps, ttrand_bps, tthigh_bps = filter_on_twc(tt_base_pairs, ttbp_to_twc, -1.5, 5)
+pflow_bps, pfrand_bps, pfhigh_bps = filter_on_twc(pf_base_pairs, pfbp_to_twc, -1.5, 5)
 
-pflowspec_bps, pfrandspec_bps, pfhighspec_bps = filter_on_twc(pfspec_bps, pfbp_to_twc, -1, 5)
+pflowspec_bps, pfrandspec_bps, pfhighspec_bps = filter_on_twc(pfspec_bps, pfbp_to_twc, -1.5, 5)
 #%%
 print("P(A):", len(pfspec_bps)/len(pf_base_pairs))
 print("P(B):", len(pflow_bps)/len(pf_base_pairs))
@@ -223,205 +232,34 @@ print(len(pfspec_bps), len(pflow_bps), len(pflowspec_bps), len(pfrandspec_bps), 
 print(len(pfspec_bps), len(pflow_bps), len(pflow_bps), len(pfrand_bps), len(pfhigh_bps))
 print(len(pflowspec_bps)/len(pflow_bps), len(pfrandspec_bps)/len(pfrand_bps), len(pfhighspec_bps)/len(pfhigh_bps))
 
+#%%Uniques
 
+print(len(unique_tup_list(pfspec_bps)), len(unique_tup_list(pflow_bps)), \
+    len(unique_tup_list(pflowspec_bps)), len(unique_tup_list(pfrandspec_bps)), len(unique_tup_list(pfhighspec_bps)))
+
+print(len(unique_tup_list(pflowspec_bps))/len(unique_tup_list(pflow_bps)), \
+    len(unique_tup_list(pfrandspec_bps))/len(unique_tup_list(pfrand_bps)), \
+    len(unique_tup_list(pfhighspec_bps))/len(unique_tup_list(pfhigh_bps)))
 #%%
-for bps in pflow_bps:
+for bps in unique_tup_list(pflow_bps):
     print(bps, pfbp_to_twc[bps], bool(bps in pflowspec_bps))
 
+#%%
 
-# #%%
-# #Initiate lists for dataframe and fill them with data
-# nucl_pos = []
-# universality = []
-# nucl_twc = []
-# distance_contact = []
-# ttnucl_to_lowtwc = dict()
-# ttnucl_to_hightwc = dict()
+pflowspec_nucl = []
+pflownonspec_nucl = []
+for nucl,twc in pfnucl_to_twc.items():
+    if twc > -1.5:
+        continue
+    if (any(nucl in i for i in pf_base_pairs)):
+        continue
+    if nucl not in pyrfu_contacts.keys():
+        pflownonspec_nucl.append(nucl)
+        continue
+    if (any('spec' in determine_universality.main('PYRFU', pyrfu_chaindict[str(i[0])], int(i[1])) for i in pyrfu_contacts[nucl])):
+        pflowspec_nucl.append(nucl)
+        continue
+    pflownonspec_nucl.append(nucl)
 
-# for aln_ix in sorted(alnpos_to_twc.keys()):
-#     if gap_to_nogap_thet8.get(int(aln_ix)) is None:
-#         continue
-#     if thet8_contacts.get(gap_to_nogap_thet8[int(aln_ix)]) is None:
-#         continue
-#     if float(alnpos_to_twc[aln_ix]) < -0.5:
-#         ttnucl_to_lowtwc[gap_to_nogap_thet8[int(aln_ix)]] = float(alnpos_to_twc[aln_ix])
-#     if float(alnpos_to_twc[aln_ix]) > 5:
-#         ttnucl_to_hightwc[gap_to_nogap_thet8[int(aln_ix)]] = float(alnpos_to_twc[aln_ix])
-#     for contact in thet8_contacts[gap_to_nogap_thet8[int(aln_ix)]]:
-#         tt_polymer = thet8_chaindict[str(contact[0])]
-#         nucl_ix = gap_to_nogap_thet8[int(aln_ix)]
-#         contact_universality = determine_universality.main('THET8', tt_polymer, int(contact[1]))
-#         #print(nucl_ix, contact_universality, alnpos_to_twc[aln_ix], contact[2])
-#         nucl_pos.append(nucl_ix)
-#         universality.append(contact_universality)
-#         nucl_twc.append(float(alnpos_to_twc[aln_ix]))
-#         distance_contact.append(contact[2])
-
-
-# #%%
-# #Initiate lists for dataframe and fill them with data for pyrfu
-# nucl_pos = []
-# universality = []
-# nucl_twc = []
-# distance_contact = []
-# pfnucl_to_lowtwc = dict()
-# pfnucl_to_hightwc = dict()
-# pfnucl_to_random = dict()
-# for aln_ix in sorted(alnpos_to_twc.keys()):
-#     if gap_to_nogap_pyrfu.get(int(aln_ix)) is None:
-#         continue
-#     if pyrfu_contacts.get(gap_to_nogap_pyrfu[int(aln_ix)]) is None:
-#         continue
-#     if float(alnpos_to_twc[aln_ix]) > 5:
-#         pfnucl_to_hightwc[gap_to_nogap_pyrfu[int(aln_ix)]] = float(alnpos_to_twc[aln_ix])
-#     if float(alnpos_to_twc[aln_ix]) < -0.5:
-#         pfnucl_to_lowtwc[gap_to_nogap_pyrfu[int(aln_ix)]] = float(alnpos_to_twc[aln_ix])
-#     if (float(alnpos_to_twc[aln_ix]) > -0.5) and (float(alnpos_to_twc[aln_ix]) < 0.5):
-#         pfnucl_to_random[gap_to_nogap_pyrfu[int(aln_ix)]] = float(alnpos_to_twc[aln_ix])
-#     for contact in pyrfu_contacts[gap_to_nogap_pyrfu[int(aln_ix)]]:
-#         pf_polymer = pyrfu_chaindict[str(contact[0])]
-#         nucl_ix = gap_to_nogap_pyrfu[int(aln_ix)]
-#         contact_universality = determine_universality.main('PYRFU', pf_polymer, int(contact[1]))
-#         #print(nucl_ix, contact_universality, alnpos_to_twc[aln_ix], contact[2])
-#         nucl_pos.append(nucl_ix)
-#         universality.append(contact_universality)
-#         nucl_twc.append(float(alnpos_to_twc[aln_ix]))
-#         distance_contact.append(contact[2])
-
-
-# #%%
-# #Build dataframe
-# tt_df = pd.DataFrame({
-#     'Nucleotide index': nucl_pos,
-#     'Universality of contact': universality,
-#     'TwinCons conservation': nucl_twc,
-#     'Contact distance': distance_contact
-# })
-
-# #%%
-# #Print dataframe
-# #print(tt_df)
-# #tt_df[tt_df['Universality of contact'].str.contains('uni', na=False)]
-
-
-
-# #%%PF
-
-# pfcontact_dict_neg = dict()
-# for base_pair in pf_base_pairs:
-#     if (base_pair[0] not in pfnucl_to_lowtwc.keys()):
-#         continue
-#     if (base_pair[1] not in pfnucl_to_lowtwc.keys()):
-#         continue
-#     if base_pair not in pfcontact_dict_neg.keys():
-#         pfcontact_dict_neg[base_pair] = []
-#     for contact in pyrfu_contacts[base_pair[1]]:
-#         tt_polymer = pyrfu_chaindict[str(contact[0])]
-#         contact_universality = determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
-#         pfcontact_dict_neg[base_pair].append((contact_universality,pfnucl_to_lowtwc[base_pair[1]], contact[2]))
-#         #print (base_pair[1], tt_polymer,contact_universality, pfnucl_to_lowtwc[base_pair[1]], contact[2])
-#     for contact in pyrfu_contacts[base_pair[0]]:
-#         tt_polymer = pyrfu_chaindict[str(contact[0])]
-#         contact_universality = determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
-#         pfcontact_dict_neg[base_pair].append((contact_universality,pfnucl_to_lowtwc[base_pair[0]], contact[2]))
-#         #print (base_pair[0], tt_polymer,contact_universality, pfnucl_to_lowtwc[base_pair[0]], contact[2])
-
-# #%%
-# pfcontact_dict_rand = dict()
-# for base_pair in pf_base_pairs:
-#     if (base_pair[0] not in pfnucl_to_random.keys()):
-#         continue
-#     if (base_pair[1] not in pfnucl_to_random.keys()):
-#         continue
-#     if base_pair not in pfcontact_dict_rand.keys():
-#         pfcontact_dict_rand[base_pair] = []
-#     for contact in pyrfu_contacts[base_pair[1]]:
-#         tt_polymer = pyrfu_chaindict[str(contact[0])]
-#         contact_universality = determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
-#         pfcontact_dict_rand[base_pair].append((contact_universality,pfnucl_to_random[base_pair[1]], contact[2]))
-#     for contact in pyrfu_contacts[base_pair[0]]:
-#         tt_polymer = pyrfu_chaindict[str(contact[0])]
-#         contact_universality = determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
-#         pfcontact_dict_rand[base_pair].append((contact_universality,pfnucl_to_random[base_pair[0]], contact[2]))
-
-# #%%
-# pfcontact_dict_pos = dict()
-# for base_pair in pf_base_pairs:
-#     if (base_pair[0] not in pfnucl_to_hightwc.keys()):
-#         continue
-#     if (base_pair[1] not in pfnucl_to_hightwc.keys()):
-#         continue
-#     if base_pair not in pfcontact_dict_pos.keys():
-#         pfcontact_dict_pos[base_pair] = []
-#     for contact in pyrfu_contacts[base_pair[1]]:
-#         tt_polymer = pyrfu_chaindict[str(contact[0])]
-#         contact_universality = determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
-#         pfcontact_dict_pos[base_pair].append((contact_universality,pfnucl_to_hightwc[base_pair[1]], contact[2]))
-#     for contact in pyrfu_contacts[base_pair[0]]:
-#         tt_polymer = pyrfu_chaindict[str(contact[0])]
-#         contact_universality = determine_universality.main('PYRFU', tt_polymer, int(contact[1]))
-#         pfcontact_dict_pos[base_pair].append((contact_universality,pfnucl_to_hightwc[base_pair[0]], contact[2]))
-
-# #%%
-# simplified_contact_type_neg = dict()
-# simplified_contact_type_pos = dict()
-# neg_list=[]
-# pos_list=[]
-# pos_list=[]
-# rand_list=[]
-# for base_pair, contacts_list in pfcontact_dict_neg.items():
-#     uni = 0
-#     spec = 0
-#     for cont in contacts_list:
-#         if cont[0] == 'uni':
-#             uni+=1
-#         elif cont[0] == 'spec':
-#             spec+=1
-#         else:
-#             pass
-#     simplified_contact_type_neg[base_pair] = (uni,spec)
-#     neg_list.append((uni,spec))
-
-# for base_pair, contacts_list in pfcontact_dict_pos.items():
-#     uni = 0
-#     spec = 0
-#     for cont in contacts_list:
-#         if cont[0] == 'uni':
-#             uni+=1
-#         elif cont[0] == 'spec':
-#             spec+=1
-#         else:
-#             pass
-#     simplified_contact_type_pos[base_pair] = (uni,spec)
-#     pos_list.append((uni,spec))
-
-# for base_pair, contacts_list in pfcontact_dict_rand.items():
-#     uni = 0
-#     spec = 0
-#     for cont in contacts_list:
-#         if cont[0] == 'uni':
-#             uni+=1
-#         elif cont[0] == 'spec':
-#             spec+=1
-#         else:
-#             pass
-#     simplified_contact_type_pos[base_pair] = (uni,spec)
-#     rand_list.append((uni,spec))
-
-# #%%
-# fig = plt.figure(figsize=(10,10))
-# ax1 = fig.add_subplot(111)
-# #ax2 = fig.add_subplot(132)
-# #ax3 = fig.add_subplot(133)
-# ax1.scatter(*zip(*pos_list), c='r', label = 'Base-pairs above twc 5')
-# #ax1.scatter(*zip(*neg_list), c='b', label = 'Base-pairs bellow twc -0.5')
-# #ax1.scatter(*zip(*rand_list), c='g', label = 'Base-pairs random twc')
-# ax1.set_xlabel('Universal contacts')
-# ax1.set_ylabel('Dom specific contacts')
-# ax1.set(xlim=(-0.1,10), ylim=(-0.1,10))
-# plt.legend()
-
-
-# #%%
-# x=zip(*pos_list)
-# sns.kdeplot(x[0],x[1], cmap="Reds", shade=True)
+print(pflowspec_nucl)
+print(pflownonspec_nucl)

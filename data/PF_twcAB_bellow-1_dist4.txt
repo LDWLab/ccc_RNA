@@ -72,10 +72,10 @@
 (2211, 2344) (-1.39800995025, -1.407960199)   True
 (2213, 2342) (-2.33333333333, -2.33333333333) True
 (2221, 2314) (-1.34825870647, -1.50746268657) False		Too weak signal, AES39, near bL9/eL15 but not quite E-tRNA but not quite too
-(2239, 2289) (-1.13432835821, -1.00995024876) False		Too weak signal, Same as ^, in E-stalk, possibly uL01, not resolved in B, no MSA either predict diff in MSA around 95-100 PF uL01р здяясфвщ к
-(2240, 2289) (-1.0, -1.00995024876) 		  False		Too weak signal, Same as ^, in E-stalk, possibly uL01, not resolved in B, no MSA either predict diff in MSA around 95-100 PF uL01р здяясфвщ к
-(2289, 2240) (-1.00995024876, -1.0) 		  False		Too weak signal, Same as ^, in E-stalk, possibly uL01, not resolved in B, no MSA either predict diff in MSA around 95-100 PF uL01р здяясфвщ к
-(2289, 2239) (-1.00995024876, -1.13432835821) False		Too weak signal, Same as ^, in E-stalk, possibly uL01, not resolved in B, no MSA either predict diff in MSA around 95-100 PF uL01р здяясфвщ к
+(2239, 2289) (-1.13432835821, -1.00995024876) False		Too weak signal, Same as ^, in E-stalk, possibly uL01, not resolved in B, no MSA either predict diff in MSA around 95-100 PF uL01р
+(2240, 2289) (-1.0, -1.00995024876) 		  False		Too weak signal, Same as ^, in E-stalk, possibly uL01, not resolved in B, no MSA either predict diff in MSA around 95-100 PF uL01р
+(2289, 2240) (-1.00995024876, -1.0) 		  False		Too weak signal, Same as ^, in E-stalk, possibly uL01, not resolved in B, no MSA either predict diff in MSA around 95-100 PF uL01р
+(2289, 2239) (-1.00995024876, -1.13432835821) False		Too weak signal, Same as ^, in E-stalk, possibly uL01, not resolved in B, no MSA either predict diff in MSA around 95-100 PF uL01р
 (2376, 2392) (-1.66666666667, -2.0) 		  True
 (2416, 2428) (-2.46766169154, -2.59502487562) False		AES36 CP. ?? Check uL05 twc
 (2443, 2503) (-1.25373134328, -1.25373134328) True
