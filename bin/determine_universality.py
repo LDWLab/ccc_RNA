@@ -34,7 +34,7 @@ def main(spec_name, polymer_name, resi_id):
             return 'uni'
         else:
             return 'spec'
-        return None
+        return 'undetermined'
 
 
 #print(main('PYRFU','uL16',150))

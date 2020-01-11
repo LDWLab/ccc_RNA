@@ -5,13 +5,21 @@
 
 import pandas as pd
 import csv
+import os
 from Bio import AlignIO
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set_style('whitegrid')
 
-import bin.determine_universality as determine_universality
+import determine_universality
 
+#Hacky way of fixing jupyter path weirdness:
+def is_interactive():
+    import __main__ as main
+    return not hasattr(main, '__file__')
+
+if not is_interactive():
+    os.chdir('../')
 #%%
 #Initialize functions for loading and parsing data.
 
@@ -199,7 +207,6 @@ alnpos_to_twc = load_cons_data('data/cons/twc_AB_LSU.csv')
 
 tt_base_pairs = base_pairs('data/contacts/TT_LSU_3D_BasePairs.csv') #Completely wrong...
 pf_base_pairs = base_pairs('data/contacts/PyFu_LSU_BasePairs.csv')  #Manually fixed by adding 1 to all in the datafile
-print(len(pf_base_pairs))
 
 thet8_contacts = load_contacts('data/contacts/4qcn_edges.txt', 'A', 4)
 pyrfu_contacts = load_contacts('data/contacts/3j2l-3j21_merge_edges.txt', '1', 4)
@@ -251,7 +258,7 @@ pflownonspec_nucl = []
 for nucl,twc in pfnucl_to_twc.items():
     if twc > -1.5:
         continue
-    if (any(nucl in i for i in pf_base_pairs)):
+    if (any(nucl in i for i in pflow_bps)):
         continue
     if nucl not in pyrfu_contacts.keys():
         pflownonspec_nucl.append(nucl)
@@ -263,3 +270,46 @@ for nucl,twc in pfnucl_to_twc.items():
 
 print(pflowspec_nucl)
 print(pflownonspec_nucl)
+
+
+# %%
+
+lowperc = []
+randperc = []
+highperc = []
+distance_list = []
+lspec_num = []
+rspec_num = []
+hspec_num = []
+for i in range(1,7):
+    distance_list.append(i)
+    pyrfu_contacts = load_contacts('data/contacts/3j2l-3j21_merge_edges.txt', '1', i)
+    pfnucl_to_twc = construct_nucl_to_twc(alnpos_to_twc, gap_to_nogap_pyrfu)
+    pfbp_to_twc = construct_bp_to_twc(pfnucl_to_twc, pf_base_pairs)
+    pfbp_to_contacts = construct_bp_to_contact(pf_base_pairs, pyrfu_contacts)
+    pfspec_bps = filter_on_specificity(pf_base_pairs, pfbp_to_contacts, 'PYRFU', pyrfu_chaindict)
+    pflow_bps, pfrand_bps, pfhigh_bps = filter_on_twc(pf_base_pairs, pfbp_to_twc, -1.5, 5)
+    pflowspec_bps, pfrandspec_bps, pfhighspec_bps = filter_on_twc(pfspec_bps, pfbp_to_twc, -1.5, 5)
+    lowperc.append(len(pflowspec_bps)/len(pflow_bps))
+    randperc.append(len(pfrandspec_bps)/len(pfrand_bps))
+    highperc.append(len(pfhighspec_bps)/len(pfhigh_bps))
+    lspec_num.append(len(pflowspec_bps))
+    rspec_num.append(len(pfrandspec_bps))
+    hspec_num.append(len(pfhighspec_bps))
+
+#%%
+spec_num = hspec_num+lspec_num+rspec_num
+
+df = pd.DataFrame(
+    {'Distance': distance_list,
+    'Low': lowperc,
+    'Rand': randperc,
+    'High': highperc})
+df
+df = df.melt('Distance', var_name='TwinCons',  value_name='Percentage specifics')
+df['Absolute numbers'] = spec_num
+df
+#%%
+%matplotlib inline
+sns.scatterplot(x='Distance', y = 'Percentage specifics', data=df, hue='TwinCons',size='Absolute numbers')
+plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
