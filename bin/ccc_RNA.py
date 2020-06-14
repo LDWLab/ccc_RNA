@@ -199,7 +199,7 @@ def unique_tup_list(tup_list):
 thet8_chaindict = load_chain_data('data/pdb/4qcn_chain_dict.csv')
 pyrfu_chaindict = load_chain_data('data/pdb/3j2l-3j21_chain_dict.csv')
 
-alignment = AlignIO.read(open('data/cons/LSU_AB.fas'), "fasta")
+alignment = AlignIO.read(open('data/alns/LSU_AB.fas'), "fasta")
 gap_to_nogap_thet8 = gap_to_nogap_construct(alignment[get_annotation_sequence_index('LSUb_262724_THET2/1-2912',alignment)])
 gap_to_nogap_pyrfu = gap_to_nogap_construct(alignment[get_annotation_sequence_index('LSUa_186497_PYRFU/1-3048',alignment)])
 
@@ -298,7 +298,7 @@ for i in range(1,7):
     hspec_num.append(len(pfhighspec_bps))
 
 #%%
-spec_num = hspec_num+lspec_num+rspec_num
+spec_num = lspec_num+rspec_num+hspec_num
 
 df = pd.DataFrame(
     {'Distance': distance_list,
