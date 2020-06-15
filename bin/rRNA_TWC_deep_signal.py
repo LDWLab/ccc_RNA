@@ -160,6 +160,7 @@ def barplot(df):
     plt.subplots_adjust(hspace=0.08)
 
     ax2.get_legend().remove()
+    ax.xaxis.set_visible(False)
     # zoom-in / limit the view to different portions of the data
     ax.set_ylim(150, 200)  # outliers only
     ax2.set_ylim(0, 40)  # most of the data
@@ -206,9 +207,14 @@ def main(commandline_arguments):
 
     truncated_aln = truncate_aln(alignment, low_alnpos)
     
-    # for alnpos in low_alnpos:
-    #    print(alnpos, gap_to_nogap[alnpos], '\t', alnindex_score[alnpos])
-    # print(truncated_aln.format("fasta"))
+    trunc_aln_ix_to_annoseq_ix = dict()
+    i = 0
+    for alnpos in low_alnpos:
+        i+=1
+        trunc_aln_ix_to_annoseq_ix[i] = gap_to_nogap[alnpos]
+        #print(alnpos, gap_to_nogap[alnpos], '\t', alnindex_score[alnpos])
+    #print(truncated_aln.format("fasta"))
+    #print(trunc_aln_ix_to_annoseq_ix)
 
     output_aln_name = '+'.join(comm_args.group_one)+'_'+'+'.join(comm_args.group_two)
     AlignIO.write(truncated_aln, comm_args.output_dir+output_aln_name+".fa", "fasta")
@@ -234,18 +240,23 @@ def main(commandline_arguments):
                             "Group",
                             "Number positions above "+str(comm_args.twc_high_cutoff)+" TWC", 
                             "Number positions bellow "+str(comm_args.twc_low_cutoff)+" TWC", 
-                            "Number positions between"])
+                            "Number positions between",
+                            "Identities of high positions by annotation seq "+comm_args.annotation_sequence])
         for group_comb in list(product(testgroup_sequence_ids, calcgroup_ids)):
             trunc_aln_for_calc = construct_aln_for_twc_with_one_seq_vs_one_group(group_comb, sliced_trunc_aln, truncated_aln)
             list_for_phymeas = ['-as',trunc_aln_for_calc.format("fasta"), '-r', '-nc']
             alnindex_score, sliced_alns, number_of_aligned_positions = PhyMeas.main(list_for_phymeas)
             low_trunc_alnpos, rand_trunc_alnpos, hig_trunc_alnpos = filter_nucl_on_twc(alnindex_score, 
                                                 comm_args.twc_low_cutoff, comm_args.twc_high_cutoff)
+            highpositions_by_annotation = list()
+            for highposid in hig_trunc_alnpos:
+                highpositions_by_annotation.append(str(trunc_aln_ix_to_annoseq_ix[highposid]))
             csv_writer.writerow([group_comb[0],
                                 group_comb[1],
                                 len(hig_trunc_alnpos),
                                 len(low_trunc_alnpos),
-                                len(rand_trunc_alnpos)])
+                                len(rand_trunc_alnpos),
+                                ";".join(highpositions_by_annotation)])
             seq_name = group_comb[0].split('/')[0]
             seq_name = seq_name.replace(comm_args.test_group+"_",'')
             if re.search(':', seq_name):

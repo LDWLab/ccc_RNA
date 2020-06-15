@@ -7,13 +7,13 @@
 			"request": "launch",
 			"program": "${file}",
 			"args": [
-				"./data/alns/SSU_A-ASG-MET-HAL-E-CHOR.fas",
-				"./output/SSU_A+MET_E+CHOR/",
-				"SSUASG",
-				"-g1", "SSUa", "SSUMET", "SSUHAL",
-				"-g2", "SSUe", "SSUCHOR",
+				"./data/alns/LSU_A-ASG-MET-HAL-E-CHOR.fas",
+				"./output/LSU_A+ASG+MET_E/",
+				"LSUCHOR",
+				"-g1", "LSUa", "LSUASG", "LSUHAL", "LSUMET",
+				"-g2", "LSUe",
 				"-anno",
-				"SSUe_559292_YEAST/1-1800"
+				"LSUa_186497_PYRFU/1-3048"
 			],
 			"console": "integratedTerminal"
 		}
@@ -28,7 +28,7 @@
 	"-g1", "SSUa", "SSUMET", "SSUHAL",
 	"-g2", "SSUe", "SSUCHOR",
 	"-anno",
-	"SSUe_559292_YEAST/1-1800"
+	"SSUa_186497_PYRFU/1-1495"
 ],
 
 "args": [
@@ -38,7 +38,7 @@
 	"-g1", "SSUa", "SSUASG", "SSUMET",
 	"-g2", "SSUe", "SSUCHOR",
 	"-anno",
-	"SSUe_559292_YEAST/1-1800"
+	"SSUa_186497_PYRFU/1-1495"
 ],
 
 "args": [
@@ -48,7 +48,7 @@
 	"-g1", "SSUa", "SSUASG", "SSUHAL",
 	"-g2", "SSUe", "SSUCHOR",
 	"-anno",
-	"SSUe_559292_YEAST/1-1800"
+	"SSUa_186497_PYRFU/1-1495"
 ],
 
 "args": [
@@ -58,7 +58,7 @@
 	"-g1", "SSUa", "SSUASG", "SSUHAL", "SSUMET",
 	"-g2", "SSUe",
 	"-anno",
-	"SSUe_559292_YEAST/1-1800"
+	"SSUa_186497_PYRFU/1-1495"
 ],
 
 //LSU
@@ -69,7 +69,7 @@
 	"-g1", "LSUa", "LSUMET", "LSUHAL",
 	"-g2", "LSUe", "LSUCHOR",
 	"-anno",
-	"LSUe_559292_YEAST/1-3554"
+	"LSUa_186497_PYRFU/1-3048"
 ],
 
 "args": [
@@ -79,7 +79,7 @@
 	"-g1", "LSUa", "LSUASG", "LSUMET",
 	"-g2", "LSUe", "LSUCHOR",
 	"-anno",
-	"LSUe_559292_YEAST/1-3554"
+	"LSUa_186497_PYRFU/1-3048"
 ],
 
 "args": [
@@ -89,7 +89,7 @@
 	"-g1", "LSUa", "LSUASG", "LSUHAL",
 	"-g2", "LSUe", "LSUCHOR",
 	"-anno",
-	"LSUe_559292_YEAST/1-3554"
+	"LSUa_186497_PYRFU/1-3048"
 ],
 
 "args": [
@@ -99,5 +99,5 @@
 	"-g1", "LSUa", "LSUASG", "LSUHAL", "LSUMET",
 	"-g2", "LSUe",
 	"-anno",
-	"LSUe_559292_YEAST/1-3554"
+	"LSUa_186497_PYRFU/1-3048"
 ],
