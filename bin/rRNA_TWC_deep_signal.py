@@ -3,7 +3,6 @@
 Find whether sequences from a third group are closer to either one of the other two groups.
 '''
 #Import required modules
-import pandas as pd
 import csv, os, sys, argparse, importlib.util, Bio.Align, re, textwrap
 from Bio import AlignIO
 from Bio.SeqRecord import SeqRecord
@@ -15,8 +14,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-sys.path.append('/f/Programs/Score/bin')
-import PhyMeas
+from twincons.TwinCons import slice_by_name
+from twincons.TwinCons import main as twc_main
+import twincons as TwinCons
 
 def create_and_parse_argument_options(argument_list):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawTextHelpFormatter)
@@ -191,7 +191,7 @@ def main(commandline_arguments):
     alignment = AlignIO.read(open(comm_args.alignment), "fasta")
     gap_to_nogap = gap_to_nogap_construct(alignment[get_annotation_sequence_index(comm_args.annotation_sequence,alignment)])
     nogap_to_gap = {v: k for k, v in gap_to_nogap.items()}
-    sliced_alns_for_calc = PhyMeas.slice_by_name(alignment)
+    sliced_alns_for_calc = slice_by_name(alignment)
     
     aln_for_calc = Bio.Align.MultipleSeqAlignment([])
     aln_for_calc = construct_aln_for_twc2(comm_args.group_one, sliced_alns_for_calc, aln_for_calc)
@@ -199,8 +199,8 @@ def main(commandline_arguments):
     
     #aln_for_calc = construct_aln_for_twc(comm_args.twc_filter_groups, sliced_alns_for_calc)
     
-    list_for_phymeas = ['-as',aln_for_calc.format("fasta"), '-r', '-nc']
-    alnindex_score,sliced_alns,number_of_aligned_positions = PhyMeas.main(list_for_phymeas)
+    list_for_phymeas = ['-as',aln_for_calc.format("fasta"), '-r', '-nc', '-mx', 'blastn']
+    alnindex_score,sliced_alns,number_of_aligned_positions, gp_mapping = twc_main(list_for_phymeas)
     
     low_alnpos, rand_alnpos, hig_alnpos = filter_nucl_on_twc(alnindex_score, 
                         comm_args.twc_low_cutoff, comm_args.twc_high_cutoff)
@@ -219,7 +219,7 @@ def main(commandline_arguments):
     output_aln_name = '+'.join(comm_args.group_one)+'_'+'+'.join(comm_args.group_two)
     AlignIO.write(truncated_aln, comm_args.output_dir+output_aln_name+".fa", "fasta")
     ########################################################################
-    sliced_trunc_aln = PhyMeas.slice_by_name(truncated_aln)
+    sliced_trunc_aln = slice_by_name(truncated_aln)
     #Do for each sequence and aggregate data.
 
     testgroup_sequence_ids = list()
@@ -244,8 +244,8 @@ def main(commandline_arguments):
                             "Identities of high positions by annotation seq "+comm_args.annotation_sequence])
         for group_comb in list(product(testgroup_sequence_ids, calcgroup_ids)):
             trunc_aln_for_calc = construct_aln_for_twc_with_one_seq_vs_one_group(group_comb, sliced_trunc_aln, truncated_aln)
-            list_for_phymeas = ['-as',trunc_aln_for_calc.format("fasta"), '-r', '-nc']
-            alnindex_score, sliced_alns, number_of_aligned_positions = PhyMeas.main(list_for_phymeas)
+            list_for_phymeas = ['-as',trunc_aln_for_calc.format("fasta"), '-r', '-nc', '-mx', 'blastn', '-gt', '0.9']
+            alnindex_score, sliced_alns, number_of_aligned_positions, gp_mapping = twc_main(list_for_phymeas)
             low_trunc_alnpos, rand_trunc_alnpos, hig_trunc_alnpos = filter_nucl_on_twc(alnindex_score, 
                                                 comm_args.twc_low_cutoff, comm_args.twc_high_cutoff)
             highpositions_by_annotation = list()
